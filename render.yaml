@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: librechat-simple
+    env: node
+    buildCommand: |
+      cd api && npm install
+      cd ../client && npm install && npm run build
+    startCommand: node api/server/simple-server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: ALL_GEMINI_API_KEYS
+        sync: false  # این را در Render Dashboard تنظیم کنید
