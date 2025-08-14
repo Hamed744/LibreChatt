@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import {
   Login,
   VerifyEmail,
-  Registration,
+  AnonymousLogin,
   ResetPassword,
   ApiErrorWatcher,
   TwoFactorScreen,
@@ -52,8 +52,8 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
     children: [
       {
-        path: 'register',
-        element: <Registration />,
+        path: 'anonymous-login',
+        element: <AnonymousLogin />,
       },
       {
         path: 'forgot-password',
@@ -80,7 +80,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: 'login',
-            element: <Login />,
+            element: <AnonymousLogin />,
           },
           {
             path: 'login/2fa',
@@ -95,7 +95,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Navigate to="/c/new" replace={true} />,
+            element: <Navigate to="/anonymous-login" replace={true} />,
           },
           {
             path: 'c/:conversationId?',

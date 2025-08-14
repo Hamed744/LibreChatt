@@ -7,7 +7,7 @@ import { TranslationKeys, useLocalize } from '~/hooks';
 
 const headerMap: Record<string, TranslationKeys> = {
   '/login': 'com_auth_welcome_back',
-  '/register': 'com_auth_create_account',
+  '/anonymous-login': 'com_auth_welcome_back',
   '/forgot-password': 'com_auth_reset_password',
   '/reset-password': 'com_auth_reset_password',
   '/login/2fa': 'com_auth_verify_your_identity',
@@ -31,6 +31,9 @@ export default function StartupLayout({ isAuthenticated }: { isAuthenticated?: b
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/c/new', { replace: true });
+    } else {
+      // Redirect to anonymous login if not authenticated
+      navigate('/anonymous-login', { replace: true });
     }
     if (data) {
       setStartupConfig(data);

@@ -91,7 +91,7 @@ const AuthContextProvider = ({
     onError: (error: TResError | unknown) => {
       const resError = error as TResError;
       doSetError(resError.message);
-      navigate('/login', { replace: true });
+      navigate('/anonymous-login', { replace: true });
     },
   });
   const logoutUser = useLogoutUserMutation({
@@ -109,7 +109,7 @@ const AuthContextProvider = ({
         token: undefined,
         isAuthenticated: false,
         user: undefined,
-        redirect: '/login',
+        redirect: '/anonymous-login',
       });
     },
   });
@@ -146,7 +146,7 @@ const AuthContextProvider = ({
           if (authConfig?.test === true) {
             return;
           }
-          navigate('/login');
+          navigate('/anonymous-login');
         }
       },
       onError: (error) => {
@@ -154,7 +154,7 @@ const AuthContextProvider = ({
         if (authConfig?.test === true) {
           return;
         }
-        navigate('/login');
+        navigate('/anonymous-login');
       },
     });
   }, []);
@@ -164,7 +164,7 @@ const AuthContextProvider = ({
       setUser(userQuery.data);
     } else if (userQuery.isError) {
       doSetError((userQuery.error as Error).message);
-      navigate('/login', { replace: true });
+      navigate('/anonymous-login', { replace: true });
     }
     if (error != null && error && isAuthenticated) {
       doSetError(undefined);
