@@ -8,6 +8,7 @@ const {
 const { loginController } = require('~/server/controllers/auth/LoginController');
 const { logoutController } = require('~/server/controllers/auth/LogoutController');
 const { verify2FAWithTempToken } = require('~/server/controllers/auth/TwoFactorAuthController');
+const { anonymousLoginController } = require('~/server/controllers/auth/AnonymousLoginController');
 const {
   enable2FA,
   verify2FA,
@@ -44,15 +45,8 @@ router.post(
   setBalanceConfig,
   loginController,
 );
+router.post('/anonymous-login', logHeaders, checkBan, anonymousLoginController);
 router.post('/refresh', refreshController);
-router.post(
-  '/register',
-  registerLimiter,
-  checkBan,
-  checkInviteUser,
-  validateRegistration,
-  registrationController,
-);
 router.post(
   '/requestPasswordReset',
   resetPasswordLimiter,
