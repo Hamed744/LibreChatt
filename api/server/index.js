@@ -5,7 +5,6 @@ require('module-alias')({ base: path.resolve(__dirname, '..') });
 const cors = require('cors');
 const axios = require('axios');
 const express = require('express');
-const passport = require('passport');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const { logger } = require('@librechat/data-schemas');
@@ -13,15 +12,13 @@ const mongoSanitize = require('express-mongo-sanitize');
 const { isEnabled, ErrorController } = require('@librechat/api');
 const { connectDb, indexSync } = require('~/db');
 const validateImageRequest = require('./middleware/validateImageRequest');
-const { jwtLogin, ldapLogin, passportLogin } = require('~/strategies');
 const initializeMCPs = require('./services/initializeMCPs');
-const configureSocialLogins = require('./socialLogins');
 const AppService = require('./services/AppService');
 const staticCache = require('./utils/staticCache');
 const noIndex = require('./middleware/noIndex');
 const routes = require('./routes');
 
-const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
+const { PORT, HOST, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
 
 // Allow PORT=0 to be used for automatic free port assignment
 const port = isNaN(Number(PORT)) ? 3080 : Number(PORT);
@@ -70,30 +67,9 @@ const startServer = async () => {
   app.use(staticCache(app.locals.paths.fonts));
   app.use(staticCache(app.locals.paths.assets));
 
-  if (!ALLOW_SOCIAL_LOGIN) {
-    console.warn('Social logins are disabled. Set ALLOW_SOCIAL_LOGIN=true to enable them.');
-  }
-
-  /* OAUTH */
-  app.use(passport.initialize());
-  passport.use(jwtLogin());
-  passport.use(passportLogin());
-
-  /* LDAP Auth */
-  if (process.env.LDAP_URL && process.env.LDAP_USER_SEARCH_BASE) {
-    passport.use(ldapLogin);
-  }
-
-  if (isEnabled(ALLOW_SOCIAL_LOGIN)) {
-    await configureSocialLogins(app);
-  }
-
-  app.use('/oauth', routes.oauth);
   /* API Endpoints */
-  app.use('/api/auth', routes.auth);
   app.use('/api/actions', routes.actions);
   app.use('/api/keys', routes.keys);
-  app.use('/api/user', routes.user);
   app.use('/api/search', routes.search);
   app.use('/api/edit', routes.edit);
   app.use('/api/messages', routes.messages);

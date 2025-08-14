@@ -17,24 +17,18 @@ const convos = require('./convos');
 const config = require('./config');
 const agents = require('./agents');
 const roles = require('./roles');
-const oauth = require('./oauth');
 const files = require('./files');
 const share = require('./share');
 const tags = require('./tags');
-const auth = require('./auth');
 const edit = require('./edit');
 const keys = require('./keys');
-const user = require('./user');
 const mcp = require('./mcp');
 
 module.exports = {
   edit,
-  auth,
   keys,
-  user,
   tags,
   roles,
-  oauth,
   files,
   share,
   banner,
