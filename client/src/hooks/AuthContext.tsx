@@ -217,6 +217,7 @@ const AuthContextProvider = ({
         [SystemRoles.ADMIN]: adminRole,
       },
       isAuthenticated,
+      setUserContext,
     }),
 
     [user, error, isAuthenticated, token, userRole, adminRole],
@@ -229,7 +230,17 @@ const useAuthContext = () => {
   const context = useContext(AuthContext);
 
   if (context === undefined) {
-    throw new Error('useAuthContext should be used inside AuthProvider');
+    return {
+      user: undefined,
+      token: undefined,
+      error: undefined,
+      isAuthenticated: false,
+      login: () => {},
+      logout: () => {},
+      setError: () => {},
+      roles: {},
+      setUserContext: () => {},
+    } as TAuthContext;
   }
 
   return context;

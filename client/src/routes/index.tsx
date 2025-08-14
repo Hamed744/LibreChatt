@@ -9,7 +9,6 @@ import {
   RequestPasswordReset,
 } from '~/components/Auth';
 import { OAuthSuccess, OAuthError } from '~/components/OAuth';
-import { AuthContextProvider } from '~/hooks/AuthContext';
 import RouteErrorBoundary from './RouteErrorBoundary';
 import StartupLayout from './Layouts/Startup';
 import LoginLayout from './Layouts/Login';
@@ -18,92 +17,105 @@ import ShareRoute from './ShareRoute';
 import ChatRoute from './ChatRoute';
 import Search from './Search';
 import Root from './Root';
+import { AuthContextProvider } from '~/hooks/AuthContext';
 
 const AuthLayout = () => (
-  <AuthContextProvider>
+  <>
     <Outlet />
     <ApiErrorWatcher />
+  </>
+);
+
+const ProviderRoot = () => (
+  <AuthContextProvider>
+    <Outlet />
   </AuthContextProvider>
 );
 
 export const router = createBrowserRouter([
   {
-    path: 'share/:shareId',
-    element: <ShareRoute />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: 'oauth',
+    element: <ProviderRoot />,
     errorElement: <RouteErrorBoundary />,
     children: [
       {
-        path: 'success',
-        element: <OAuthSuccess />,
+        path: 'share/:shareId',
+        element: <ShareRoute />,
+        errorElement: <RouteErrorBoundary />,
       },
       {
-        path: 'error',
-        element: <OAuthError />,
-      },
-    ],
-  },
-  {
-    path: '/',
-    element: <StartupLayout />,
-    errorElement: <RouteErrorBoundary />,
-    children: [
-      {
-        path: 'anonymous-login',
-        element: <AnonymousLogin />,
-      },
-      {
-        path: 'forgot-password',
-        element: <RequestPasswordReset />,
-      },
-      {
-        path: 'reset-password',
-        element: <ResetPassword />,
-      },
-    ],
-  },
-  {
-    path: 'verify',
-    element: <VerifyEmail />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    element: <AuthLayout />,
-    errorElement: <RouteErrorBoundary />,
-    children: [
-      {
-        path: '/',
-        element: <LoginLayout />,
+        path: 'oauth',
+        errorElement: <RouteErrorBoundary />,
         children: [
           {
-            path: 'login',
-            element: <AnonymousLogin />,
+            path: 'success',
+            element: <OAuthSuccess />,
           },
           {
-            path: 'login/2fa',
-            element: <TwoFactorScreen />,
+            path: 'error',
+            element: <OAuthError />,
           },
         ],
       },
-      dashboardRoutes,
       {
         path: '/',
-        element: <Root />,
+        element: <StartupLayout />,
+        errorElement: <RouteErrorBoundary />,
         children: [
           {
-            index: true,
-            element: <Navigate to="/anonymous-login" replace={true} />,
+            path: 'anonymous-login',
+            element: <AnonymousLogin />,
           },
           {
-            path: 'c/:conversationId?',
-            element: <ChatRoute />,
+            path: 'forgot-password',
+            element: <RequestPasswordReset />,
           },
           {
-            path: 'search',
-            element: <Search />,
+            path: 'reset-password',
+            element: <ResetPassword />,
+          },
+        ],
+      },
+      {
+        path: 'verify',
+        element: <VerifyEmail />,
+        errorElement: <RouteErrorBoundary />,
+      },
+      {
+        element: <AuthLayout />,
+        errorElement: <RouteErrorBoundary />,
+        children: [
+          {
+            path: '/',
+            element: <LoginLayout />,
+            children: [
+              {
+                path: 'login',
+                element: <AnonymousLogin />,
+              },
+              {
+                path: 'login/2fa',
+                element: <TwoFactorScreen />,
+              },
+            ],
+          },
+          dashboardRoutes,
+          {
+            path: '/',
+            element: <Root />,
+            children: [
+              {
+                index: true,
+                element: <Navigate to="/anonymous-login" replace={true} />,
+              },
+              {
+                path: 'c/:conversationId?',
+                element: <ChatRoute />,
+              },
+              {
+                path: 'search',
+                element: <Search />,
+              },
+            ],
           },
         ],
       },
